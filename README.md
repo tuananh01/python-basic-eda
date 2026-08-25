@@ -35,7 +35,7 @@ Sample of first 5 rows:
 
 ### Schema
 <!--[](visualization/python_eda_schema.drawio.png)-->
-<img src="visualization/python_eda_schema.drawio.png" height="300">
+<img src="visualization/python_eda_schema.drawio.png" height="600">
 
 ### ETL Pipeline
 ```mermaid
@@ -112,8 +112,12 @@ graph TD
 ---
 ## Building Dashboards
 ![](visualization/overall_status.png) 
-<br> <br>
+--
 ![](visualization/customer_group.png) 
-<br> <br>
+--
 ![](visualization/age_group.png) 
+--
+![](visualization/channels.png) 
+--
+![](visualization/top20.png) 
 
