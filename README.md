@@ -33,4 +33,5 @@ Sample of first 5 rows:
 | KH0004 | Dương Bảo Ích | Nam | 68 | Giáo viên | Doanh nghiệp lớn | kh0004@email.com | 955667651 |
 | KH0005 | Võ Hoàng Giang | Nữ | 26 | Kinh doanh tự do | Doanh nghiệp lớn | kh0005@email.com | 922981052 |
 
-### Schema 
+### Schema
+![](visualization/python_eda_schema.drawio.png)
