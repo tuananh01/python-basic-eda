@@ -11,7 +11,7 @@ This project involves:
 Colab link: https://colab.research.google.com/drive/1qsGXKG2r0xVvjwwBlggaUjjneOza0b3i#scrollTo=bUDeAeVwRBed&uniqifier=6
 
 ---
-## ETL Pipeline
+## Building ETL Pipeline
 ### Datasets
 _`giao_dich.csv`_  
 Sample of first 5 rows:
@@ -34,4 +34,86 @@ Sample of first 5 rows:
 | KH0005 | Võ Hoàng Giang | Nữ | 26 | Kinh doanh tự do | Doanh nghiệp lớn | kh0005@email.com | 922981052 |
 
 ### Schema
-![](visualization/python_eda_schema.drawio.png)
+<!--[](visualization/python_eda_schema.drawio.png)-->
+<img src="visualization/python_eda_schema.drawio.png" height="300">
+
+### ETL Pipeline
+```mermaid
+graph TD
+    %% Define global styles for shapes
+    classDef process fill:#ffffff,stroke:#000000,stroke-width:1px,color:#000000
+    classDef note fill:#e2e8f0,stroke:#94a3b8,stroke-width:1px,color:#333333,stroke-dasharray: 3 3
+    classDef diamond fill:#ffffff,stroke:#000000,stroke-width:1px,color:#000000
+
+    subgraph Extract [1. EXTRACT]
+        A[giao_dich.csv <br/> Transaction Data]:::process
+        B[khach_hang_crm.csv <br/> Customer Data]:::process
+    end
+
+    subgraph Transform [2. TRANSFORM]
+        C[Clean Transactions]:::process
+        C_note[Drop duplicates, fill missing<br/>branches & channels]:::note -.- C
+        
+        D[Format Data]:::process
+        D_note[Standardize text casing, extract<br/>Month/Hour from Date/Time]:::note -.- D
+        
+        E[Flag Errors]:::process
+        E_note[Identify SoTien < 0 <br/> as 'GD âm']:::note -.- E
+        
+        G{Merge Datasets}:::diamond
+        G_note[Left Join on MaKH]:::note -.- G
+        
+        H[Categorize Age]:::process
+        H_note[Apply Gen Z, Millennials,<br/>Gen X, Boomer logic]:::note -.- H
+        
+        I[Filter Data]:::process
+        I_note[Remove 'GD âm'<br/>Create df_filtered]:::note -.- I
+
+        %% Transform internal flow routing
+        C --> D --> E --> G
+        G --> H --> I
+    end
+
+    %% Connections linking Extract to Transform
+    A --> C
+    B --> G
+
+    subgraph Load [3. LOAD / REPORT GENERATION]
+        J[rp_gd_thang <br/> Monthly volume & value]:::process
+        K[rp_nhomkh <br/> Metrics by customer group]:::process
+        
+        L[rp_kenhgd_kh <br/> Channels by customer group]:::process
+        M[rp_mobile_app <br/> Filtered for Mobile App only]:::process
+        
+        N[rp_kenhgd <br/> Value by channel]:::process
+        O[rp_summary <br/> High-level KPIs & Digital %]:::process
+        
+        P[rp_nhomtuoi <br/> Metrics by age demographic]:::process
+        Q[rp_top20 <br/> Top 20 VIPs by total value]:::process
+        
+        %% Vertical parent/child dependencies inside the Load layer
+        L --> M
+        N --> O
+    end
+
+    %% Fan out from Filter Data to all independent reports
+    I --> J
+    I --> K
+    I --> L
+    I --> N
+    I --> P
+    I --> Q
+    
+    %% Style the background containers
+    style Extract fill:#f8fafc,stroke:#64748b,stroke-width:2px,color:#000000
+    style Transform fill:#f8fafc,stroke:#64748b,stroke-width:2px,color:#000000
+    style Load fill:#f8fafc,stroke:#64748b,stroke-width:2px,color:#000000
+```
+---
+## Building Dashboards
+![](visualization/overall_status.png) 
+<br> <br>
+![](visualization/customer_group.png) 
+<br> <br>
+![](visualization/age_group.png) 
+
